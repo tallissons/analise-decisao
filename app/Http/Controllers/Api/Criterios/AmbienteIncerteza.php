@@ -65,4 +65,26 @@ class AmbienteIncerteza extends Controller
             ]
         ];
     }
+
+    public function hurwicz(Request $request)
+    {
+        $hurwicz = [];
+
+        for ($i=1; $i <= $request[ 'qnt_inv']; $i++) {
+            $calc = [];
+            $inv = $request['inv'.$i];
+
+            for ($j=0; $j < $request['qnt_cenario']; $j++) {
+                array_push($calc, $inv[$j] * ($request['cenarios'][$j]/100));
+            }
+
+            array_push($hurwicz, array_sum($calc));
+        }
+
+        return [
+            'hurwicz' => [
+                'inv_indicado' => (array_search(max($hurwicz), $hurwicz) + 1),
+            ]
+        ];
+    }
 }
