@@ -16,3 +16,4 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('ambiente/risco/vme', [AmbienteRisco::class, 'vme'])->name('api.risco.vme');
+Route::post('ambiente/risco/poe', [AmbienteRisco::class, 'poe'])->name('api.risco.poe');
