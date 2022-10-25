@@ -83,4 +83,41 @@ class AmbienteRisco extends Controller
             ]
         ];
     }
+
+    /**
+     *  Valor Esperado da Informação Perfeita (VEIP): permite
+     *  conhecer a perda monetária entre a melhor alternativa existente e
+     *  aquela que apresentaria a melhor combinação possível de cenários.
+     */
+    public function veip(Request $request)
+    {
+        $vme1 = $this->vme($request);
+
+        for ($i=1; $i <= $request['qnt_inv']; $i++) {
+            $inv = $request['inv'.$i];
+
+            for ($j=0; $j < $request['qnt_cenario']; $j++) {
+                $aux[$j][$i] = $inv[$j];
+            }
+        }
+
+        $inv_perf = [];
+        for ($i=0; $i < $request['qnt_cenario']; $i++) {
+            array_push($inv_perf, max($aux[$i]));
+        }
+
+        $request['qnt_inv'] = 1;
+        $request['inv1'] = $inv_perf;
+
+        $vme2 = $this->vme($request);
+
+        $veip = max($vme2['vme']['investimentos']) - max($vme1['vme']['investimentos']);
+
+        return [
+            'veip' => [
+                'inv_perf' => $inv_perf,
+                'veip' => $veip
+            ]
+        ];
+    }
 }
