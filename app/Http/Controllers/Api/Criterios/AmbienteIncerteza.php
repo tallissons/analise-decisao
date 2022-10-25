@@ -46,4 +46,23 @@ class AmbienteIncerteza extends Controller
             ]
         ];
     }
+
+    /**
+     * Laplace: opta-se pelo investimento com a maior média aritmética dos retornos esperados
+     * por investimento e o número de cenários existentes;
+     */
+    public function laplace(Request $request)
+    {
+        $calc = [];
+        for ($i=1; $i <= $request[ 'qnt_inv']; $i++) {
+            $inv = $request['inv'.$i];
+            array_push($calc, (array_sum($inv)/$request[ 'qnt_cenario']));
+        }
+
+        return [
+            'laplace' => [
+                'inv_indicado' => (array_search(max($calc), $calc) + 1)
+            ]
+        ];
+    }
 }

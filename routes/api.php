@@ -22,3 +22,4 @@ Route::post('ambiente/risco/veip', [AmbienteRisco::class, 'veip'])->name('api.ri
 
 Route::post('ambiente/risco/maxi-max', [AmbienteIncerteza::class, 'maxi_max'])->name('api.incerteza.maxi_max');
 Route::post('ambiente/risco/maxi-min', [AmbienteIncerteza::class, 'maxi_min'])->name('api.incerteza.maxi_min');
+Route::post('ambiente/risco/laplace', [AmbienteIncerteza::class, 'laplace'])->name('api.incerteza.laplace');
