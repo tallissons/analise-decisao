@@ -26,4 +26,24 @@ class AmbienteIncerteza extends Controller
             ]
         ];
     }
+
+    /**
+     * MaxiMin: escolhe-se o investimento com o maior retorno esperado dentre os menores retornos esperados.
+     */
+    public function maxi_min(Request $request)
+    {
+        $calc = [];
+        for ($i=1; $i <= $request[ 'qnt_inv']; $i++) {
+            $inv = $request['inv'.$i];
+            array_push($calc, min($inv));
+        }
+
+        $maxi_min = max($calc);
+
+        return [
+            'maxi_min' => [
+                'inv_indicado' => (array_search($maxi_min, $calc) + 1)
+            ]
+        ];
+    }
 }
