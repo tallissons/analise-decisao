@@ -117,5 +117,14 @@ class RiscoService
             ]
         ];
     }
+
+    public function all(array $request)
+    {
+        return [
+            'vme' => $this->vme($request)['vme'],
+            'poe' => $this->poe($request)['poe'],
+            'veip' => $this->veip($request)['veip']
+        ];
+    }
 }
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AnaliseDecisao;
 use App\Http\Controllers\Api\Criterios\AmbienteRisco;
 use App\Http\Controllers\Api\Criterios\AmbienteIncerteza;
 use Illuminate\Http\Request;
@@ -25,3 +26,5 @@ Route::post('ambiente/risco/maxi-min', [AmbienteIncerteza::class, 'maxi_min'])->
 Route::post('ambiente/risco/laplace', [AmbienteIncerteza::class, 'laplace'])->name('api.incerteza.laplace');
 Route::post('ambiente/risco/hurwicz', [AmbienteIncerteza::class, 'hurwicz'])->name('api.incerteza.hurwicz');
 Route::post('ambiente/risco/mini-max', [AmbienteIncerteza::class, 'mini_max'])->name('api.incerteza.mini_max');
+
+Route::post('analise/decisao', AnaliseDecisao::class)->name('api.analise.decisao');
