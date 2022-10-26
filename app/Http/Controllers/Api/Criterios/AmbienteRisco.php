@@ -3,10 +3,18 @@
 namespace App\Http\Controllers\Api\Criterios;
 
 use App\Http\Controllers\Controller;
+use App\Services\Criterios\RiscoService;
 use Illuminate\Http\Request;
 
 class AmbienteRisco extends Controller
 {
+    protected $riscoService;
+
+    public function __construct(RiscoService $riscoService)
+    {
+        $this->riscoService = $riscoService;
+    }
+
     /**
      *  Valor Monetário Esperado (VME): escolhe-se o investimento
      *  com a maior média ponderada dos retornos esperados por
@@ -14,27 +22,7 @@ class AmbienteRisco extends Controller
      *  ocorrência;
      */
     public function vme(Request $request){
-        $vme = [
-            'investimentos' => []
-        ];
-
-        for ($i=1; $i <= $request[ 'qnt_inv']; $i++) {
-            $calc = [];
-            $inv = $request['inv'.$i];
-
-            for ($j=0; $j < $request['qnt_cenario']; $j++) {
-                array_push($calc, $inv[$j] * ($request['cenarios'][$j]/100));
-            }
-
-            array_push($vme['investimentos'], array_sum($calc));
-        }
-
-        return [
-            'vme' => [
-                'investimentos' => $vme['investimentos'],
-                'inv_indicado' => (array_search(max($vme['investimentos']), $vme['investimentos']) + 1),
-            ]
-        ];
+        return $this->riscoService->vme($request->all());
     }
 
     /**
@@ -45,43 +33,7 @@ class AmbienteRisco extends Controller
      */
     public function poe(Request $request)
     {
-        for ($i=1; $i <= $request[ 'qnt_inv']; $i++) {
-            $inv = $request['inv'.$i];
-
-            for ($j=0; $j < $request['qnt_cenario']; $j++) {
-                $aux[$j][$i] = $inv[$j];
-            }
-        }
-
-        for ($i=0; $i < $request['qnt_cenario']; $i++) {
-            $max = max($aux[$i]);
-
-            for ($j=1; $j <= $request['qnt_inv']; $j++) {
-                $custo_oportunidade[$j][$i] = $max - $aux[$i][$j];
-            }
-        }
-
-        $poe = [
-            'investimentos' => []
-        ];
-
-        for ($i=1; $i <= $request['qnt_inv']; $i++) {
-            $calc = [];
-            $inv = $custo_oportunidade[$i];
-
-            for ($j=0; $j < $request['qnt_cenario']; $j++) {
-                array_push($calc, $inv[$j] * ($request['cenarios'][$j]/100));
-            }
-
-            array_push($poe['investimentos'], array_sum($calc));
-        }
-
-        return [
-            'poe' => [
-                'investimentos' => $poe['investimentos'],
-                'inv_indicado' => (array_search(min($poe['investimentos']), $poe['investimentos']) + 1)
-            ]
-        ];
+        return $this->riscoService->poe($request->all());
     }
 
     /**
@@ -91,33 +43,6 @@ class AmbienteRisco extends Controller
      */
     public function veip(Request $request)
     {
-        $vme1 = $this->vme($request);
-
-        for ($i=1; $i <= $request['qnt_inv']; $i++) {
-            $inv = $request['inv'.$i];
-
-            for ($j=0; $j < $request['qnt_cenario']; $j++) {
-                $aux[$j][$i] = $inv[$j];
-            }
-        }
-
-        $inv_perf = [];
-        for ($i=0; $i < $request['qnt_cenario']; $i++) {
-            array_push($inv_perf, max($aux[$i]));
-        }
-
-        $request['qnt_inv'] = 1;
-        $request['inv1'] = $inv_perf;
-
-        $vme2 = $this->vme($request);
-
-        $veip = max($vme2['vme']['investimentos']) - max($vme1['vme']['investimentos']);
-
-        return [
-            'veip' => [
-                'inv_perf' => $inv_perf,
-                'veip' => $veip
-            ]
-        ];
+        return $this->riscoService->veip($request->all());
     }
 }
