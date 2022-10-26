@@ -3,28 +3,24 @@
 namespace App\Http\Controllers\Api\Criterios;
 
 use App\Http\Controllers\Controller;
+use App\Services\Criterios\IncertezaService;
 use Illuminate\Http\Request;
 
 class AmbienteIncerteza extends Controller
 {
+    protected $incertezaService;
+
+    public function __construct(IncertezaService $incertezaService)
+    {
+        $this->incertezaService = $incertezaService;
+    }
+
     /**
      * MaxiMax: opta-se pelo investimento com o maior retorno esperado dentre todos os previstos
      */
     public function maxi_max(Request $request)
     {
-        $calc = [];
-        for ($i=1; $i <= $request[ 'qnt_inv']; $i++) {
-            $inv = $request['inv'.$i];
-            array_push($calc, max($inv));
-        }
-
-        $maxi_max = max($calc);
-
-        return [
-            'maxi_max' => [
-                'inv_indicado' => (array_search($maxi_max, $calc) + 1)
-            ]
-        ];
+        return $this->incertezaService->maxi_max($request->all());
     }
 
     /**
@@ -32,19 +28,7 @@ class AmbienteIncerteza extends Controller
      */
     public function maxi_min(Request $request)
     {
-        $calc = [];
-        for ($i=1; $i <= $request[ 'qnt_inv']; $i++) {
-            $inv = $request['inv'.$i];
-            array_push($calc, min($inv));
-        }
-
-        $maxi_min = max($calc);
-
-        return [
-            'maxi_min' => [
-                'inv_indicado' => (array_search($maxi_min, $calc) + 1)
-            ]
-        ];
+        return $this->incertezaService->maxi_min($request->all());
     }
 
     /**
@@ -53,17 +37,7 @@ class AmbienteIncerteza extends Controller
      */
     public function laplace(Request $request)
     {
-        $calc = [];
-        for ($i=1; $i <= $request[ 'qnt_inv']; $i++) {
-            $inv = $request['inv'.$i];
-            array_push($calc, (array_sum($inv)/$request[ 'qnt_cenario']));
-        }
-
-        return [
-            'laplace' => [
-                'inv_indicado' => (array_search(max($calc), $calc) + 1)
-            ]
-        ];
+        return $this->incertezaService->laplace($request->all());
     }
 
     /**
@@ -73,24 +47,7 @@ class AmbienteIncerteza extends Controller
      */
     public function hurwicz(Request $request)
     {
-        $hurwicz = [];
-
-        for ($i=1; $i <= $request[ 'qnt_inv']; $i++) {
-            $calc = [];
-            $inv = $request['inv'.$i];
-
-            for ($j=0; $j < $request['qnt_cenario']; $j++) {
-                array_push($calc, $inv[$j] * ($request['cenarios'][$j]/100));
-            }
-
-            array_push($hurwicz, array_sum($calc));
-        }
-
-        return [
-            'hurwicz' => [
-                'inv_indicado' => (array_search(max($hurwicz), $hurwicz) + 1),
-            ]
-        ];
+        return $this->incertezaService->hurwicz($request->all());
     }
 
     /**
@@ -99,30 +56,6 @@ class AmbienteIncerteza extends Controller
      */
     public function mini_max(Request $request)
     {
-        for ($i=1; $i <= $request[ 'qnt_inv']; $i++) {
-            $inv = $request['inv'.$i];
-
-            for ($j=0; $j < $request['qnt_cenario']; $j++) {
-                $aux[$j][$i] = $inv[$j];
-            }
-        }
-
-        $mini_max = [];
-
-        for ($i=0; $i < $request['qnt_cenario']; $i++) {
-            $max = max($aux[$i]);
-
-            for ($j=1; $j <= $request['qnt_inv']; $j++) {
-                $custo_oportunidade[$j][$i] = $max - $aux[$i][$j];
-            }
-
-            array_push($mini_max, max($custo_oportunidade[$i+1]));
-        }
-
-        return [
-            'mini_max' => [
-                'inv_indicado' => (array_search(min($mini_max), $mini_max) + 1)
-            ]
-        ];
+        return $this->incertezaService->mini_max($request->all());
     }
 }
