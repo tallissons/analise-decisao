@@ -122,4 +122,15 @@ class IncertezaService
             ]
         ];
     }
+
+    public function all(array $request)
+    {
+        return [
+            'maxi_max' => $this->maxi_max($request)['maxi_max'],
+            'maxi_min' => $this->maxi_min($request)['maxi_min'],
+            'laplace' => $this->laplace($request)['laplace'],
+            'hurwicz' => $this->hurwicz($request)['hurwicz'],
+            'mini_max' => $this->mini_max($request)['mini_max']
+        ];
+    }
 }

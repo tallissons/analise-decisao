@@ -50,4 +50,37 @@ class AnaliseDecisaoTest extends TestCase
             ]
         ]);
     }
+
+    public function test_analise_ambiente_incerteza()
+    {
+        $this->withoutExceptionHandling();
+
+        $response = $this->postJson(route('api.analise.decisao'), [
+            'ambiente' => 'Incerteza',
+            'qnt_cenario' => 3,
+            'qnt_inv' => 3,
+            'cenarios' => [25, 35, 40],
+            'inv1' => [100.00, 210.0, 140.0],
+            'inv2' => [120.0, 80.0, 190.0],
+            'inv3' => [170.0, 200.0, 140.0]
+        ]);
+
+        $response->assertJson([
+            'maxi_max' => [
+                'inv_indicado' => 1 //inv1
+            ],
+            'maxi_min' => [
+                'inv_indicado' => 3 //inv3
+            ],
+            'laplace' => [
+                'inv_indicado' => 3 //inv3
+            ],
+            'hurwicz' => [
+                'inv_indicado' => 3 //inv3
+            ],
+            'mini_max' => [
+                'inv_indicado' => 3 //inv3
+            ]
+        ]);
+    }
 }

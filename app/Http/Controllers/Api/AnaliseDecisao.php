@@ -3,16 +3,19 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Services\Criterios\IncertezaService;
 use App\Services\Criterios\RiscoService;
 use Illuminate\Http\Request;
 
 class AnaliseDecisao extends Controller
 {
     protected $riscoService;
+    protected $incertezaService;
 
-    public function __construct(RiscoService $riscoService)
+    public function __construct(RiscoService $riscoService, IncertezaService $incertezaService)
     {
         $this->riscoService = $riscoService;
+        $this->incertezaService = $incertezaService;
     }
 
     public function __invoke(Request $request)
@@ -23,7 +26,7 @@ class AnaliseDecisao extends Controller
             $response = $this->riscoService->all($request->all());
 
         }elseif (strtoupper($request->ambiente) == 'INCERTEZA') {
-            # code...
+            $response = $this->incertezaService->all($request->all());
         }
 
         return $response;
