@@ -156,6 +156,7 @@
                     success: function(response){
                         if (response['data']['ambiente'] == 'RISCO') {
                             result_vme(response);
+                            result_poe(response);
                         }
 
                         $('#view2').hide();
@@ -193,6 +194,57 @@
                 html += `<p><strong>Inv${response['vme']['inv_indicado']} é o mais indicado.</strong></p>`;
 
                 $('#reult_vme').html(html);
+            }
+
+            function result_poe(response)
+            {
+                html = '';
+
+                html += '<table class="table">';
+                    html += '<thead>';
+                        html += '<th></th>';
+                        for (i = 1; i <= response['data']['qnt_cenario']; i++){
+                            html += `<th>C${i} (${response['data']['cenarios'][i-1]}%)</th>`;
+                        }
+                    html += '</thead>';
+                    html += '<tbody>';
+                        for (i = 1; i <= response['data']['qnt_inv']; i++){
+                            index = `inv${i}`;
+                            html += '<tr>';
+                                html += `<td><strong>Inv${i}</strong></td>`;
+                                for (j = 0; j < response['data']['qnt_cenario']; j++){
+                                    html += `<td>${response['data'][index][j]}</td>`;
+                                }
+                            html += '</tr>';
+                        }
+                    html += '</tbody>';
+                html += '</table>';
+
+                html += '<br>';
+
+                html += '<table class="table">';
+                    html += '<thead>';
+                        html += '<th></th>';
+                        html += `<th colspan="${response['data']['qnt_cenario']}">Custos de Oportunidade</th>`;
+                        html += '<th>Perdas Ponderadas</th>';
+                    html += '</thead>';
+                    html += '<tbody>';
+                        for (i = 1; i <= response['data']['qnt_inv']; i++){
+                            index = `inv${i}`;
+                            html += '<tr>';
+                                html += `<td><strong>Inv${i}</strong></td>`;
+                                for (j = 0; j < response['data']['qnt_cenario']; j++){
+                                    html += `<td>${response['poe']['custo_oportunidade'][i][j]}</td>`;
+                                }
+                                html += `<td>${response['poe']['investimentos'][i-1]}</td>`;
+                            html += '</tr>';
+                        }
+                    html += '</tbody>';
+                html += '</table>';
+
+                html += `<p><strong>Inv${response['poe']['inv_indicado']} é o mais indicado.</strong></p>`;
+
+                $('#reult_poe').html(html);
             }
         </script>
     </body>

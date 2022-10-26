@@ -46,6 +46,11 @@ class AnaliseDecisaoTest extends TestCase
                 'inv_indicado' => 3 //inv3
             ],
             'poe' => [
+                'custo_oportunidade' => [
+                    1 => [70, 0, 50],
+                    2 => [50, 130, 0],
+                    3 => [0, 10, 50]
+                ],
                 'investimentos' => [
                     37.5, // Perdas Ponderadas inv1
                     58.0, // Perdas Ponderadas inv2

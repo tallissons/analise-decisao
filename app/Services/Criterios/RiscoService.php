@@ -75,6 +75,7 @@ class RiscoService
 
         return [
             'poe' => [
+                'custo_oportunidade' => $custo_oportunidade,
                 'investimentos' => $poe['investimentos'],
                 'inv_indicado' => (array_search(min($poe['investimentos']), $poe['investimentos']) + 1)
             ]
