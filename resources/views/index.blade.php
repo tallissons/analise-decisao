@@ -42,6 +42,42 @@
                         <br>
                         @include('_forms.form_cenario_inv')
                     </div>
+
+                    <div id="view_result" style="display: none;">
+                        <h3>Resultado: Análise de Decisão de <span id="text_amb_result"></span></h3>
+                        <div style="text-align: right">
+                            <button id="btn_prev2" class="btn btn-info col-auto">Voltar</button>
+                        </div>
+                        <br>
+
+                        <div id="amb_risco">
+                            <div class="vme">
+                                <h4>Valor Monetário Esperado (VME):</h4>
+
+                                <div id="reult_vme">
+
+                                </div>
+                            </div>
+
+                            <br>
+                            <div class="poe">
+                                <h4>Perda de Oportunidade Esperada (POE):</h4>
+
+                                <div id="reult_poe">
+
+                                </div>
+                            </div>
+
+                            <br>
+                            <div class="veip">
+                                <h4>Valor Esperado da Informação Perfeita (VEIP):</h4>
+
+                                <div id="reult_veip">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -52,6 +88,7 @@
                 $('#view1').hide();
 
                 $('#text_amb').append($("input[type=radio][name=ambiente]:checked").val());
+                $('#text_amb_result').append($("input[type=radio][name=ambiente]:checked").val());
                 $('#input_ambiente').val($("input[type=radio][name=ambiente]:checked").val());
                 $('#input_qnt_cenario').val($('#config_qnt_cenario').val());
                 $('#input_qnt_inv').val($('#config_qnt_inv').val());
@@ -63,13 +100,20 @@
 
             $('#form_submit').submit(function(event){
                 event.preventDefault();
-                alert($(this).serialize())
+                get_result($(this).serialize());
             });
 
             $('#btn_prev').click(function(){
                 $('#view1').show();
                 $('#text_amb').empty();
+                $('#text_amb_result').empty();
                 $('#view2').hide();
+                $('#view_result').hide();
+            })
+
+            $('#btn_prev2').click(function(){
+                $('#view_result').hide();
+                $('#view2').show();
             })
 
             function form_generate(qnt_cenario, qnt_inv) {
@@ -100,6 +144,55 @@
 
                 $('#form_inv').html(html);
 
+            }
+
+            function get_result(data)
+            {
+                $.ajax({
+                    url: "{{route('api.analise.decisao')}}",
+                    type: "post",
+                    data: data,
+                    dataType: "json",
+                    success: function(response){
+                        if (response['data']['ambiente'] == 'RISCO') {
+                            result_vme(response);
+                        }
+
+                        $('#view2').hide();
+                        $('#view_result').show();
+                    }
+                });
+            }
+
+            function result_vme(response)
+            {
+                html = '';
+
+                html += '<table class="table">';
+                    html += '<thead>';
+                        html += '<th></th>';
+                            for (i = 1; i <= response['data']['qnt_cenario']; i++){
+                                html += `<th>C${i} (${response['data']['cenarios'][i-1]}%)</th>`;
+                            }
+                        html += '<th>VME</th>';
+                    html += '</thead>';
+                    html += '<tbody>';
+                        for (i = 1; i <= response['data']['qnt_inv']; i++){
+                            index = `inv${i}`;
+                            html += '<tr>';
+                                html += `<td><strong>Inv${i}</strong></td>`;
+                                for (j = 0; j < response['data']['qnt_cenario']; j++){
+                                    html += `<td>${response['data'][index][j]}</td>`;
+                                }
+                                html += `<td>${response['vme']['investimentos'][i-1]}</td>`;
+                            html += '</tr>';
+                        }
+                    html += '</tbody>';
+                html += '</table>';
+
+                html += `<p><strong>Inv${response['vme']['inv_indicado']} é o mais indicado.</strong></p>`;
+
+                $('#reult_vme').html(html);
             }
         </script>
     </body>

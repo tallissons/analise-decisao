@@ -21,11 +21,12 @@ class AnaliseDecisao extends Controller
     public function __invoke(Request $request)
     {
         $response = [];
+        $request['ambiente'] = strtoupper($request->ambiente);
 
-        if (strtoupper($request->ambiente) == 'RISCO') {
+        if ($request['ambiente'] == 'RISCO') {
             $response = $this->riscoService->all($request->all());
 
-        }elseif (strtoupper($request->ambiente) == 'INCERTEZA') {
+        }elseif ($request['ambiente'] == 'INCERTEZA') {
             $response = $this->incertezaService->all($request->all());
         }
 

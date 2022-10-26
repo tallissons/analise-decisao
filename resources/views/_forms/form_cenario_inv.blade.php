@@ -1,4 +1,4 @@
-<form id="form_submit" action="{{route('api.risco.vme')}}" method="post" autocomplete="off">
+<form id="form_submit" action="{{route('api.analise.decisao')}}" method="post" autocomplete="off">
     @csrf
     <input id="input_ambiente" type="hidden" class="form-control" name="ambiente">
     <input id="input_qnt_cenario" type="hidden" class="form-control" name="qnt_cenario">

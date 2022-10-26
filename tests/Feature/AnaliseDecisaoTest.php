@@ -28,6 +28,15 @@ class AnaliseDecisaoTest extends TestCase
         ]);
 
         $response->assertJson([
+            'data' => [
+                'ambiente' => 'RISCO',
+                'qnt_cenario' => 3,
+                'qnt_inv' => 3,
+                'cenarios' => [25, 35, 40],
+                'inv1' => [100.00, 210.0, 140.0],
+                'inv2' => [120.0, 80.0, 190.0],
+                'inv3' => [170.0, 200.0, 140.0]
+            ],
             'vme' => [
                 'investimentos' => [
                     154.5, //vme inv1
