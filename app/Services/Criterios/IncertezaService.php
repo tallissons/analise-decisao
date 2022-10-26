@@ -19,6 +19,7 @@ class IncertezaService
 
         return [
             'maxi_max' => [
+                'maxi_max' => $calc,
                 'inv_indicado' => (array_search($maxi_max, $calc) + 1)
             ]
         ];
@@ -39,6 +40,7 @@ class IncertezaService
 
         return [
             'maxi_min' => [
+                'maxi_min' => $calc,
                 'inv_indicado' => (array_search($maxi_min, $calc) + 1)
             ]
         ];
@@ -58,6 +60,7 @@ class IncertezaService
 
         return [
             'laplace' => [
+                'laplace' => $calc,
                 'inv_indicado' => (array_search(max($calc), $calc) + 1)
             ]
         ];
@@ -85,6 +88,7 @@ class IncertezaService
 
         return [
             'hurwicz' => [
+                'hurwicz' => $hurwicz,
                 'inv_indicado' => (array_search(max($hurwicz), $hurwicz) + 1),
             ]
         ];
@@ -118,6 +122,8 @@ class IncertezaService
 
         return [
             'mini_max' => [
+                'custo_oportunidade' => $custo_oportunidade,
+                'maiores' => $mini_max,
                 'inv_indicado' => (array_search(min($mini_max), $mini_max) + 1)
             ]
         ];
@@ -126,6 +132,7 @@ class IncertezaService
     public function all(array $request)
     {
         return [
+            'data' => $request,
             'maxi_max' => $this->maxi_max($request)['maxi_max'],
             'maxi_min' => $this->maxi_min($request)['maxi_min'],
             'laplace' => $this->laplace($request)['laplace'],

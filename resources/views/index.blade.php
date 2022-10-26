@@ -77,6 +77,59 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div id="amb_incerteza">
+                            <div id="result_table_incerteza">
+
+                            </div>
+
+                            <br>
+                            <div class="MaxiMax">
+                                <h4>MaxiMax:</h4>
+
+                                <div id="result_maxi_max">
+
+                                </div>
+                            </div>
+
+                            <br>
+                            <div class="MaxiMin">
+                                <h4>MaxiMin:</h4>
+
+                                <div id="result_maxi_min">
+
+                                </div>
+                            </div>
+
+                            <br>
+                            <div class="Laplace:">
+                                <h4>Laplace:</h4>
+
+                                <div id="result_laplace">
+
+                                </div>
+                            </div>
+
+                            <br>
+                            <div class="Hurwicz">
+                                <h4>Hurwicz:</h4>
+
+                                <div id="result_hurwicz">
+
+                                </div>
+                            </div>
+
+                            <br>
+                            <div class="MiniMax">
+                                <h4>MiniMax:</h4>
+
+                                <div id="result_mini_max">
+
+                                </div>
+                            </div>
+                        </div>
+
+
                     </div>
                 </div>
             </div>
@@ -154,11 +207,21 @@
                     data: data,
                     dataType: "json",
                     success: function(response){
-                        console.log(response['veip']['vme_inv_perf']);
                         if (response['data']['ambiente'] == 'RISCO') {
+                            $('#amb_incerteza').hide();
+                            $('#amb_risco').show();
                             result_vme(response);
                             result_poe(response);
                             result_veip(response);
+                        }else if (response['data']['ambiente'] == 'INCERTEZA') {
+                            $('#amb_risco').hide();
+                            $('#amb_incerteza').show();
+                            all_table_incerteza(response);
+                            result_maxi_max(response);
+                            result_maxi_min(response);
+                            result_laplace(response);
+                            result_hurwicz(response);
+                            result_mini_max(response);
                         }
 
                         $('#view2').hide();
@@ -277,6 +340,106 @@
                 html += `<p><strong>VEIP = ${response['veip']['veip']}</strong></p>`;
 
                 $('#reult_veip').html(html);
+            }
+
+            function all_table_incerteza(response)
+            {
+                html = '';
+
+                html += '<table class="table">';
+                    html += '<thead>';
+                        html += '<th></th>';
+                            for (i = 1; i <= response['data']['qnt_cenario']; i++){
+                                html += `<th>C${i} (${response['data']['cenarios'][i-1]}%)</th>`;
+                            }
+                        html += '<th>MaxiMax</th>';
+                        html += '<th>MaxiMin</th>';
+                        html += '<th>Laplace</th>';
+                        html += '<th>Hurwicz</th>';
+                    html += '</thead>';
+                    html += '<tbody>';
+                        for (i = 1; i <= response['data']['qnt_inv']; i++){
+                            index = `inv${i}`;
+                            html += '<tr>';
+                                html += `<td><strong>Inv${i}</strong></td>`;
+                                for (j = 0; j < response['data']['qnt_cenario']; j++){
+                                    html += `<td>${response['data'][index][j]}</td>`;
+                                }
+                                html += `<td>${response['maxi_max']['maxi_max'][i-1]}</td>`;
+                                html += `<td>${response['maxi_min']['maxi_min'][i-1]}</td>`;
+                                html += `<td>${response['laplace']['laplace'][i-1]}</td>`;
+                                html += `<td>${response['hurwicz']['hurwicz'][i-1]}</td>`;
+                            html += '</tr>';
+                        }
+                    html += '</tbody>';
+                html += '</table>';
+
+                $('#result_table_incerteza').html(html);
+            }
+
+            function result_maxi_max(response)
+            {
+                html = '';
+
+                html += `<p><strong>Inv${response['maxi_max']['inv_indicado']} é o mais indicado.</strong></p>`;
+
+                $('#result_maxi_max').html(html);
+            }
+
+            function result_maxi_min(response)
+            {
+                html = '';
+
+                html += `<p><strong>Inv${response['maxi_min']['inv_indicado']} é o mais indicado.</strong></p>`;
+
+                $('#result_maxi_min').html(html);
+            }
+
+            function result_laplace(response)
+            {
+                html = '';
+
+                html += `<p><strong>Inv${response['laplace']['inv_indicado']} é o mais indicado.</strong></p>`;
+
+                $('#result_laplace').html(html);
+            }
+
+            function result_hurwicz(response)
+            {
+                html = '';
+
+                html += `<p><strong>Inv${response['hurwicz']['inv_indicado']} é o mais indicado.</strong></p>`;
+
+                $('#result_hurwicz').html(html);
+            }
+
+            function result_mini_max(response)
+            {
+                html = '';
+
+                html += '<table class="table">';
+                    html += '<thead>';
+                        html += '<th></th>';
+                        html += `<th colspan="${response['data']['qnt_cenario']}">Custos de Oportunidade</th>`;
+                        html += '<th>MAIORES</th>';
+                    html += '</thead>';
+                    html += '<tbody>';
+                        for (i = 1; i <= response['data']['qnt_inv']; i++){
+                            index = `inv${i}`;
+                            html += '<tr>';
+                                html += `<td><strong>Inv${i}</strong></td>`;
+                                for (j = 0; j < response['data']['qnt_cenario']; j++){
+                                    html += `<td>${response['mini_max']['custo_oportunidade'][i][j]}</td>`;
+                                }
+                                html += `<td>${response['mini_max']['maiores'][i-1]}</td>`;
+                            html += '</tr>';
+                        }
+                    html += '</tbody>';
+                html += '</table>';
+
+                html += `<p><strong>Inv${response['mini_max']['inv_indicado']} é o mais indicado.</strong></p>`;
+
+                $('#result_mini_max').html(html);
             }
         </script>
     </body>

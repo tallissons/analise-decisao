@@ -81,19 +81,42 @@ class AnaliseDecisaoTest extends TestCase
         ]);
 
         $response->assertJson([
+            'data' => [
+                'ambiente' => 'INCERTEZA',
+                'qnt_cenario' => 3,
+                'qnt_inv' => 3,
+                'cenarios' => [25, 35, 40],
+                'inv1' => [100.00, 210.0, 140.0],
+                'inv2' => [120.0, 80.0, 190.0],
+                'inv3' => [170.0, 200.0, 140.0]
+            ],
             'maxi_max' => [
+                'maxi_max' => [210, 190, 200],
                 'inv_indicado' => 1 //inv1
             ],
             'maxi_min' => [
+                'maxi_min' => [100, 80, 140],
                 'inv_indicado' => 3 //inv3
             ],
             'laplace' => [
+                'laplace' => [150, 130, 170],
                 'inv_indicado' => 3 //inv3
             ],
             'hurwicz' => [
+                'hurwicz' => [154.5, 134, 168.5],
                 'inv_indicado' => 3 //inv3
             ],
             'mini_max' => [
+                'custo_oportunidade' => [
+                    1 => [70, 0, 50],
+                    2 => [50, 130, 0],
+                    3 => [0, 10, 50]
+                ],
+                'maiores' => [
+                    70,
+                    130,
+                    50
+                ],
                 'inv_indicado' => 3 //inv3
             ]
         ]);
