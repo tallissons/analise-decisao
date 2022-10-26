@@ -114,6 +114,7 @@ class RiscoService
         return [
             'veip' => [
                 'inv_perf' => $inv_perf,
+                'vme_inv_perf' => $vme2['vme']['investimentos'][0],
                 'veip' => $veip
             ]
         ];

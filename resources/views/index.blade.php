@@ -154,9 +154,11 @@
                     data: data,
                     dataType: "json",
                     success: function(response){
+                        console.log(response['veip']['vme_inv_perf']);
                         if (response['data']['ambiente'] == 'RISCO') {
                             result_vme(response);
                             result_poe(response);
+                            result_veip(response);
                         }
 
                         $('#view2').hide();
@@ -245,6 +247,36 @@
                 html += `<p><strong>Inv${response['poe']['inv_indicado']} é o mais indicado.</strong></p>`;
 
                 $('#reult_poe').html(html);
+            }
+
+            function result_veip(response)
+            {
+                html = '';
+
+                html += '<table class="table">';
+                    html += '<thead>';
+                        html += '<th></th>';
+                            for (i = 1; i <= response['data']['qnt_cenario']; i++){
+                                html += `<th>C${i} (${response['data']['cenarios'][i-1]}%)</th>`;
+                            }
+                        html += '<th>VME</th>';
+                    html += '</thead>';
+                    html += '<tbody>';
+                        for (i = 1; i <= 1; i++){
+                            html += '<tr>';
+                                html += `<td><strong>Inv.Perf</strong></td>`;
+                                for (j = 0; j < response['data']['qnt_cenario']; j++){
+                                    html += `<td>${response['veip']['inv_perf'][j]}</td>`;
+                                }
+                                html += `<td>${response['veip']['vme_inv_perf']}</td>`;
+                            html += '</tr>';
+                        }
+                    html += '</tbody>';
+                html += '</table>';
+
+                html += `<p><strong>VEIP = ${response['veip']['veip']}</strong></p>`;
+
+                $('#reult_veip').html(html);
             }
         </script>
     </body>

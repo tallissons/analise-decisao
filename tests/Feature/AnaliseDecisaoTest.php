@@ -60,6 +60,7 @@ class AnaliseDecisaoTest extends TestCase
             ],
             'veip' => [
                 'inv_perf' => [170.0, 210.0, 190.0],
+                'vme_inv_perf' => 192,
                 'veip' => 23.5
             ]
         ]);
