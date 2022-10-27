@@ -46,6 +46,7 @@
                     <div id="view_result" style="display: none;">
                         <h3>Resultado: Análise de Decisão de <span id="text_amb_result"></span></h3>
                         <div style="text-align: right">
+                            <button onclick="relatorio_pdf()" class="btn btn-danger col-auto">PDF</button>
                             <button id="btn_prev2" class="btn btn-info col-auto">Voltar</button>
                         </div>
                         <br>
@@ -440,6 +441,31 @@
                 html += `<p><strong>Inv${response['mini_max']['inv_indicado']} é o mais indicado.</strong></p>`;
 
                 $('#result_mini_max').html(html);
+            }
+
+            function relatorio_pdf()
+            {
+                var token = $('#form_submit').find('input[name=_token]').val();
+
+                ambiente = $("input[type=radio][name=ambiente]:checked").val();
+
+                relatorio = $('#view_result').html();
+
+                if (ambiente == 'Risco') {
+                    relatorio = $('#amb_risco').html();
+                }else if (ambiente == 'Incerteza') {
+                    relatorio = $('#amb_incerteza').html();
+                }
+
+                $.ajax({
+                    url: "{{route('relatorio.pdf')}}",
+                    type: "post",
+                    data: {ambiente:ambiente, relatorio:relatorio, _token:token },
+                    dataType: "json",
+                    success: function(response){
+                        window.open("{{url('/storage/pdf/analise_decisao.pdf')}}", "janelaNova");
+                    }
+                });
             }
         </script>
     </body>
