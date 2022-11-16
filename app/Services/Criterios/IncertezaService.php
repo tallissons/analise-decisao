@@ -117,7 +117,10 @@ class IncertezaService
                 $custo_oportunidade[$j][$i] = $max - $aux[$i][$j];
             }
 
-            array_push($mini_max, max($custo_oportunidade[$i+1]));
+            if($i+1 <= $request['qnt_inv']){
+                array_push($mini_max, max($custo_oportunidade[$i+1]));
+            }
+
         }
 
         return [

@@ -175,7 +175,7 @@
 
                 for (i = 1; i <= qnt_cenario; i++){
                     html += `<div class="form-group" style="padding: 2px;">`;
-                        html += `<input name="cenarios[]" required min="0" type="number" step="any" class="form-control" placeholder="C${i}">`;
+                        html += `<input name="cenarios[]" required type="number" step="any" class="form-control" placeholder="C${i}">`;
                     html +=`</div>`;
                 }
 
@@ -189,7 +189,7 @@
 
                         for (j = 1; j <= qnt_cenario; j++){
                             html += '<div class="form-group" style="padding: 2px;">';
-                                html += `<input type="number" required min="0" step="any" name="inv${i}[]" class="form-control" placeholder="Inv${i}, C${j}">`;
+                                html += `<input type="number" required step="any" name="inv${i}[]" class="form-control" placeholder="Inv${i}, C${j}">`;
                             html += '</div>';
                         }
 
